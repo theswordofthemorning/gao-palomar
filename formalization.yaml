@@ -1,0 +1,152 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Gao's conjecture: consecutive integers coalesce with density one under the Collatz map"
+  description: >-
+    A proof of a 1993 conjecture of G.-G. Gao on the Collatz map
+    C(n) = n/2 or 3n+1. Gao says that n and n+1 coalesce at step k if
+    C^k(n) = C^k(n+1), the two trajectories have the same number of halvings
+    in their first k steps, and neither passes through 1. The development
+    proves Gao's conjecture that the normalized count d̄_k of coalescing pairs
+    below 2^k tends to 1, that his proportion d(x) also tends to 1, and the
+    form recorded by Lagarias: the set of n with C^k(n) = C^k(n+1) for some
+    k ≤ log2 n has natural density one. The proof follows a pair of
+    trajectories through a Markov chain on states {v, 3^k v + c} driven by fair
+    coin flips, which describes the residue classes modulo 2^t exactly, and
+    shows that the chain is absorbed almost surely. Nothing here bears on the
+    3x+1 conjecture itself: coalescence does not require reaching 1.
+  authors:
+    - "Omar Javier Said Duran"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Omar Javier Said Duran"
+
+classification:
+  arxiv: ["math.NT", "math.PR"]
+  msc2020: ["11B83", "60J10", "68V20"]
+
+sources:
+  - title: "Proof of Gao's conjecture (1993) in Gao's form and in Lagarias's form, first presented by this formalization and its companion paper"
+    type: original-proof
+    relationship: other
+    note: >-
+      The companion paper is O. J. Said Duran, "Consecutive integers coalesce
+      with density one under the Collatz map: a formally verified proof of a
+      conjecture of Gao", preprint, version 1 at
+      https://doi.org/10.5281/zenodo.23003524 (27 September 2026); version 2
+      (29 September 2026) submitted to Qeios for open peer review. It
+      describes the argument and names the Lean theorem behind each step.
+  - title: "On consecutive numbers of the same height in the Collatz problem"
+    authors:
+      - "Guo-Gang Gao"
+    id: "doi:10.1016/0012-365X(93)90240-T"
+    type: "article"
+    location: "Discrete Mathematics 112 (1993), 261-267"
+    relationship: background
+    note: >-
+      States the conjecture (p. 265, d̄_k -> 1), the definition of coalescence
+      (p. 264) and Tables 2 and 3, which the companion paper reproduces
+      numerically with the definitions of Challenge.lean.
+    license: "unknown"
+    author_endorsement: not-contacted
+  - title: "The 3x+1 problem: an annotated bibliography (1963-1999)"
+    authors:
+      - "Jeffrey C. Lagarias"
+    id: "arXiv:math/0309224"
+    type: "article"
+    location: "https://arxiv.org/abs/math/0309224"
+    relationship: background
+    note: "Entry 68 records Gao's conjecture in the density-one form stated as lagarias_form."
+    license: "unknown"
+    author_endorsement: not-contacted
+
+related_formalizations:
+  - id: "https://doi.org/10.5281/zenodo.23003500"
+    relationship: adapts
+    note: >-
+      The same development, archived on Zenodo (version 1.0.0) for Lean
+      v4.32.2, together with the companion results on conjectures of Garner
+      and Wu. This repository contains only the modules needed for Gao's
+      conjecture, ported to the Lean module system and a newer toolchain.
+
+status:
+  scope: >-
+    Both forms of the conjecture are fully formalized: lagarias_form (natural
+    density one of the set of n whose trajectory meets that of n+1 within
+    floor(log2 n) steps) and gao_form (d̄_k -> 1 and d(x) -> 1, with Gao's
+    coalescence in its most demanding reading). The companion paper's
+    Corollary C (the proportion a(t)/2^t of fused classes tends to 1) is not
+    stated separately, and neither are the paper's remarks, which are not
+    formalized. Nothing about reaching 1 is claimed.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: agent
+      models: ["Claude Opus 5.5", "Claude Opus 5", "Claude Fable 5"]
+      framework: "Claude Code"
+      tool_setup: >-
+        AI-assisted: the author directed Claude Code agents, which wrote the
+        Lean proofs, the independent Python numerical checks and a first
+        draft of the paper, working in a local Lean and Mathlib installation
+        with the Lean compiler as the only proof checker.
+      cost:
+        wall_time: "sessions from 10 to 29 September 2026, after exploratory work on the project from July 2026"
+        spend_usd: "subscription-based"
+        hardware: "local machine (Windows) with API-hosted models"
+      prompting_notes: >-
+        The author set the goals (Gao's statement, then each missing
+        ingredient) and required every claim to be checked by Lean and by an
+        independent computation.
+  spend_usd: "subscription-based"
+  notes: >-
+    Claude Opus 5.5 produced the final chain of results (September 2026);
+    Claude Opus 5 and Claude Fable 5 were used in earlier stages. The author
+    is responsible for the content; the statements in Challenge.lean have not
+    yet been audited by an independent human expert.
+
+fidelity:
+  divergences: >-
+    (1) Gao's condition that 1 does not occur in the first k iterations is
+    read in its most demanding form, C^i(n) != 1 and C^i(n+1) != 1 for
+    0 <= i <= k; any weaker reading gives a larger set, so the result covers
+    it. (2) Gao's d(x) is stated for natural numbers x; since the counting
+    function is constant between consecutive integers, this gives the same
+    limit for real x. (3) Lagarias's log2 n is Nat.log 2 n, its floor, which
+    is equivalent because k is an integer. (4) For n = 0 the Lagarias
+    condition reads k <= 0 and fails, which does not affect densities. None
+    known beyond these.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    No independent human review yet. Checks performed: the definitions of
+    Challenge.lean reproduce all 21 entries of Gao's Table 3 and all 7 of his
+    Table 2 (independent Python programs, and #guard commands in
+    GaoLiteral.lean for k = 4..12); for all 1 <= n < 2^22 every meeting within
+    floor(log2 n) steps is a coalescence in Gao's sense; the Markov chain
+    agrees with the integer pairs for 2^18 <= n < 2^19. The previous version
+    of the development was rebuilt from scratch and replayed by leanchecker
+    with only propext, Classical.choice and Quot.sound. Open peer review has
+    been requested on Qeios.
+
+alignment:
+  namespace: "GaoCoalescence"
+  statements:
+    - source: "Gao (1993), conjecture on p. 265, as recorded by Lagarias (annotated bibliography, entry 68)"
+      lean: "GaoCoalescence.lagarias_form"
+      module: "Challenge"
+      status: "proved"
+      note: "Natural density one of {m : exists k <= log2 m, C^k(m) = C^k(m+1)}; proved in Solution from GaoEnunciado.conjetura_gao."
+    - source: "Gao (1993), p. 265: d̄_k -> 1; and d(x) -> 1 (p. 264, left open by Gao)"
+      lean: "GaoCoalescence.gao_form"
+      module: "Challenge"
+      status: "proved"
+      note: "Proved in Solution from GaoLiteral.conjetura_gao_literal, via the bridge lemma Hienas.puente (a meeting within log2 n steps is a coalescence)."
+
+acknowledgements: "Lean 4 and Mathlib; the Palomar template; Gao's tables, used to check the definitions."
